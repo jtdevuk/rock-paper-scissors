@@ -1,0 +1,43 @@
+body {
+    background-color: rgb(69, 160, 61);
+}
+
+.center-text {
+    text-align: center;    
+    font-family: 'Ubuntu', sans-serif;    
+}
+
+h1 {
+    font-size: 75px;
+}
+
+p {
+    font-size: 30px;
+}
+
+h2 {
+    margin-right: 20px;
+}
+
+#score-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color: darkgray;
+}
+
+#choice-container { 
+    margin-top: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.enlarge {
+    transform: scale(1.3);
+}
+
+.pic {    
+    width: 250px;
+    padding: 70px;
+}
