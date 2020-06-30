@@ -44,10 +44,21 @@ h2 {
 
 #message-div {
     display: block;
+    text-align: center;
     margin: 0 auto;
     width: 1000px;       
-    font-size: 30px;
-    border: 3px solid green;    
+    font-size: 30px;      
+    color: white;
+}
+
+button {
+    background-color: lightblue;
+    display: block;
+    margin: 20px auto;
+    width: 500px;
+    height: 50px;
+    font-size: 20px;
+   
 }
 
 @media only screen and (max-width: 1050px) {

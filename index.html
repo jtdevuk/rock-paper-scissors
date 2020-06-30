@@ -11,19 +11,19 @@
         <div class="center-text">
             <p>Test your luck against the computer player in this classic game. Best score out of five will win the round!</p>
         </div>
-        <div id="score" class="center-text">
+        <div id="score" class="center-text">            
             <div>
                 <h2>Player Score:</h2>
             </div>
-            <div id="player">
+            <div id="player" class="reset">
                 <h2>0</h2>
             </div>
             <div>
                 <h2>Computer Score:</h2>
             </div>
-            <div id="computer">
+            <div id="computer" class="reset">
                 <h2>0</h2>
-            </div>
+            </div>            
         </div>
         <div id="choices">
             <img src="images/rock.svg" alt="rock" class="pic" id="rock">
@@ -32,9 +32,13 @@
         </div>
 
     </body>
-    <script>           
-                
-        let computerPlay = function() {
+    <script>   
+    
+        let rounds = 0;
+        let playerScore = 0;
+        let computerScore = 0;  
+
+        function computerPlay() {
             let result = Math.floor(Math.random() * 3 );
         if (result == 0) {
             return "rock";        
@@ -43,59 +47,51 @@
         } else {
             return "scissors";
             }
-        }
+        }        
         
-        let rounds = 0;
-        let playerScore = 0;
-        let computerScore = 0;        
-
         function game(playerSelection) { 
 
             playRound(playerSelection, computerPlay());
 
-            function playRound(playerSelection, computerSelection) {
-
-                const playerLowerCase = playerSelection.toLowerCase();
+            function playRound(playerSelection, computerSelection) {                              
                 
-                let roundWinner;
-                
-                if (playerLowerCase == "rock") {
+                if (playerSelection == "rock") {
                     if (computerSelection == "rock") {
-                        roundWinner = "Draw! You both chose Rock";
+                        roundWinner("Draw! You both chose Rock");
                     } else if (computerSelection == "paper") {
-                        roundWinner = "You lose! Paper beats Rock";
+                        roundWinner("You lose! Paper beats Rock");
                         computerScore += 1;
                         updateComputerTotal();
                         
                     } else {                            
-                        roundWinner = "You win! Rock beats Scissors!"
+                        roundWinner("You win! Rock beats Scissors!");
                         playerScore+= 1;
                         updatePlayerTotal();                        
                     }
 
-                } else if (playerLowerCase == "paper") {
+                } else if (playerSelection == "paper") {
                     if (computerSelection == "paper") {
-                        roundWinner = "Draw! you both chose Paper";
+                        roundWinner("Draw! you both chose Paper");
                     } else if (computerSelection == "scissors") {
-                        roundWinner = "You lose! Scissors beats Paper";
+                        roundWinner("You lose! Scissors beats Paper");
                         computerScore += 1;
                         updateComputerTotal();
                     } else {                            
-                        roundWinner = "You win! Paper beats Rock!"
+                        roundWinner("You win! Paper beats Rock!")
                         playerScore+=1;
                         updatePlayerTotal();                        
                             
                     }
 
-                } else if (playerLowerCase == "scissors") {
+                } else if (playerSelection == "scissors") {
                     if (computerSelection == "scissors") {
-                        roundWinner = "Draw! you both chose Scissors";
+                        roundWinner("Draw! you both chose Scissors");
                     } else if (computerSelection == "rock") {
-                        roundWinner = "You lose! Rock beats Scissors";
+                        roundWinner("You lose! Rock beats Scissors");
                         computerScore += 1;
                         updateComputerTotal();
                     } else {                            
-                        roundWinner = "You win! Scissors beats Paper!"
+                        roundWinner("You win! Scissors beats Paper!")
                         playerScore+=1;
                         updatePlayerTotal();                            
                     }
@@ -106,26 +102,46 @@
             
             if (rounds == 5) {
 
-                const container = document.querySelector('#score')
-                const message = document.createElement('div');
-                message.setAttribute('id', 'message-div');
-                
-                if (playerScore >= 3) {
-                    message.textContent = `Congratulations! you won a total of ${playerScore} games and are the round winner.`
-
-                    console.log(`Congratulations! you won a total of ${playerScore} games and are the round winner.`)
-                } else {
-                    message.textContent = `Sorry, but you only won ${playerScore} games and you lost this round. Better luck next time!`
-                    console.log(`Sorry, but you only won ${playerScore} games and you lost this round. Better luck next time!`)            
-                }
-                rounds = 0;
-
-               
-                container.after(message);
-                
-            }
-        
+                endMessage();                
+                playAgain();                
+            }        
         } 
+
+        const bodyNode = document.querySelector('body');
+        const message = document.createElement('div');
+        const before = document.querySelector('#choices')
+        
+        function roundWinner(msg) {
+            message.setAttribute('id', 'message-div');
+            bodyNode.insertBefore(message, before); 
+            message.textContent = msg
+        }
+
+        function playAgain() {            
+
+            const insertButton = document.createElement('button');            
+            insertButton.textContent = "Play again?";
+            bodyNode.insertBefore(insertButton, before);
+
+            let clickButton = document.querySelector('button');
+            clickButton.addEventListener('click', function() {
+                resetBothScores();
+                rounds = 0;
+                insertButton.remove();
+                message.remove();
+            });        
+        }
+
+        function endMessage() {                    
+            message.setAttribute('id', 'message-div');
+            bodyNode.insertBefore(message, before);        
+
+            if (playerScore >= 3) {
+                message.textContent = `Congratulations! You won a total of ${playerScore} games and are the round winner.`                   
+            } else {
+                message.textContent = `Sorry, but you only won ${playerScore} games and you lost this round. Better luck next time!`           
+            }            
+        }
         
         function updateComputerTotal(){
             const score = document.querySelector('#computer');
@@ -135,21 +151,26 @@
         function updatePlayerTotal(){
             const score = document.querySelector('#player');
             score.innerHTML = `<h2>${playerScore}</h2>`;
-        }
+        }        
 
-        
-
-        function scale(e) {
+        function scalePics(e) {
             this.classList.toggle('enlarge');            
         }
 
+        function resetBothScores() {
+            reset = document.querySelectorAll('.reset');
+            reset.forEach(score => score.innerHTML="<h2>0</h2>")
+            computerScore = 0;
+            playerScore = 0;
+        }
+
     const pics = document.querySelectorAll('.pic');
+    pics.forEach(pic => pic.addEventListener('mouseover', scalePics));
+    pics.forEach(pic => pic.addEventListener('mouseleave', scalePics));     
+
     const rock = document.querySelector('#rock');
     const paper = document.querySelector('#paper');
-    const scissors = document.querySelector('#scissors');
-    
-    pics.forEach(pic => pic.addEventListener('mouseover', scale));
-    pics.forEach(pic => pic.addEventListener('mouseleave', scale));     
+    const scissors = document.querySelector('#scissors');    
     
     rock.addEventListener("click", function() { // need to create a foreach function to call game and pass in the id attribute of each image - but how?        
             game("rock");
@@ -165,3 +186,8 @@
 
     </script>
 </html>
+
+<!--Things to work on:
+
+1. Find a way to add event listeners for each image so that when clicked, they call game() with the appropriate argument
+2 At the end of a round, suspend the listeners so clicking and hovering do nothing-->
