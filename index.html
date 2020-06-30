@@ -11,7 +11,7 @@
         <div class="center-text">
             <p>Test your luck against the computer player in this classic game. Best score out of five will win the round!</p>
         </div>
-        <div id="score-box" class="center-text">
+        <div id="score" class="center-text">
             <div>
                 <h2>Player Score:</h2>
             </div>
@@ -25,7 +25,7 @@
                 <h2>0</h2>
             </div>
         </div>
-        <div id="choice-container">
+        <div id="choices">
             <img src="images/rock.svg" alt="rock" class="pic" id="rock">
             <img src="images/paper.svg" alt="paper" class="pic" id="paper">
             <img src="images/scissors.svg" alt="scissors" class="pic" id="scissors">
@@ -106,12 +106,22 @@
             
             if (rounds == 5) {
 
+                const container = document.querySelector('#score')
+                const message = document.createElement('div');
+                message.setAttribute('id', 'message-div');
+                
                 if (playerScore >= 3) {
+                    message.textContent = `Congratulations! you won a total of ${playerScore} games and are the round winner.`
+
                     console.log(`Congratulations! you won a total of ${playerScore} games and are the round winner.`)
                 } else {
+                    message.textContent = `Sorry, but you only won ${playerScore} games and you lost this round. Better luck next time!`
                     console.log(`Sorry, but you only won ${playerScore} games and you lost this round. Better luck next time!`)            
                 }
                 rounds = 0;
+
+               
+                container.after(message);
                 
             }
         
