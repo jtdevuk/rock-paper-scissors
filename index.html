@@ -32,12 +32,35 @@
         </div>
 
     </body>
-    <script>   
-    
+    <script> 
+
         let rounds = 0;
         let playerScore = 0;
-        let computerScore = 0;  
+        let computerScore = 0;    
 
+        toggleEventListeners('on');
+
+        function toggleEventListeners(toggle) {            
+            const pics = document.querySelectorAll('.pic');
+            if(toggle == 'on') {
+                pics.forEach(pic => pic.addEventListener('mouseover', scalePics));
+                pics.forEach(pic => pic.addEventListener('mouseleave', scalePics));
+                pics.forEach(pic => pic.addEventListener('click', callGame));
+            } else if(toggle == "off") {
+                pics.forEach(pic => pic.removeEventListener('mouseover', scalePics));
+                pics.forEach(pic => pic.removeEventListener('mouseleave', scalePics));
+                pics.forEach(pic => pic.removeEventListener('click', callGame));  
+            }      
+        }
+
+        function scalePics(e) {
+            this.classList.toggle('enlarge');            
+        }
+
+        function callGame() {            
+            game(this.id);
+        }     
+        
         function computerPlay() {
             let result = Math.floor(Math.random() * 3 );
         if (result == 0) {
@@ -51,9 +74,7 @@
         
         function game(playerSelection) { 
 
-            playRound(playerSelection, computerPlay());
-
-            function playRound(playerSelection, computerSelection) {                              
+            const computerSelection = computerPlay();                              
                 
                 if (playerSelection == "rock") {
                     if (computerSelection == "rock") {
@@ -95,8 +116,7 @@
                         playerScore+=1;
                         updatePlayerTotal();                            
                     }
-                }                             
-            }
+                }   
             
             rounds += 1;
             
@@ -117,30 +137,36 @@
             message.textContent = msg
         }
 
-        function playAgain() {            
-
-            const insertButton = document.createElement('button');            
-            insertButton.textContent = "Play again?";
-            bodyNode.insertBefore(insertButton, before);
-
-            let clickButton = document.querySelector('button');
-            clickButton.addEventListener('click', function() {
-                resetBothScores();
-                rounds = 0;
-                insertButton.remove();
-                message.remove();
-            });        
-        }
-
         function endMessage() {                    
             message.setAttribute('id', 'message-div');
             bodyNode.insertBefore(message, before);        
 
             if (playerScore >= 3) {
                 message.textContent = `Congratulations! You won a total of ${playerScore} games and are the round winner.`                   
-            } else {
+            } else if(playerScore == 0) {
+                message.textContent = `Sorry, but you didn't win any games and you lost this round. Better luck next time!`
+            } else if(playerScore == 1) {
+                `Sorry, but you only won ${playerScore} game and you lost this round. Better luck next time!`
+            } else
                 message.textContent = `Sorry, but you only won ${playerScore} games and you lost this round. Better luck next time!`           
-            }            
+                       
+        }
+
+        function playAgain() {            
+            toggleEventListeners('off');
+
+            const insertButton = document.createElement('button');            
+            insertButton.textContent = "Play again?";
+            bodyNode.insertBefore(insertButton, before);
+            let clickButton = document.querySelector('button');
+
+            clickButton.addEventListener('click', function() {
+                resetBothScores();
+                rounds = 0;
+                insertButton.remove();
+                message.remove();
+                toggleEventListeners('on');
+            });        
         }
         
         function updateComputerTotal(){
@@ -151,11 +177,7 @@
         function updatePlayerTotal(){
             const score = document.querySelector('#player');
             score.innerHTML = `<h2>${playerScore}</h2>`;
-        }        
-
-        function scalePics(e) {
-            this.classList.toggle('enlarge');            
-        }
+        }                
 
         function resetBothScores() {
             reset = document.querySelectorAll('.reset');
@@ -163,31 +185,5 @@
             computerScore = 0;
             playerScore = 0;
         }
-
-    const pics = document.querySelectorAll('.pic');
-    pics.forEach(pic => pic.addEventListener('mouseover', scalePics));
-    pics.forEach(pic => pic.addEventListener('mouseleave', scalePics));     
-
-    const rock = document.querySelector('#rock');
-    const paper = document.querySelector('#paper');
-    const scissors = document.querySelector('#scissors');    
-    
-    rock.addEventListener("click", function() { // need to create a foreach function to call game and pass in the id attribute of each image - but how?        
-            game("rock");
-        });   
-      
-    paper.addEventListener("click", function() {
-        game("paper");
-    });
-
-    scissors.addEventListener("click", function() {
-        game("scissors");
-    });
-
     </script>
 </html>
-
-<!--Things to work on:
-
-1. Find a way to add event listeners for each image so that when clicked, they call game() with the appropriate argument
-2 At the end of a round, suspend the listeners so clicking and hovering do nothing-->
